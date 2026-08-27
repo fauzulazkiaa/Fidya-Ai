@@ -33,10 +33,7 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals & static files
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    "/(api|trpc)(.*)",
-    // Clerk auto-proxy path
-    "/__clerk/:path*",
+    // Protect specific routes only
+    "/((?!_next/static|_next/image|favicon.ico|public).*)",
   ],
 };
