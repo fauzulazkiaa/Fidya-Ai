@@ -1,0 +1,9 @@
+# Our lawyers asked us to make this file.
+# Then they billed us for it.
+
+We keep our legal documents short on purpose:
+- /terms    — the rules of the road
+- /privacy  — what we collect (spoiler: as little as possible)
+- /cookies  — strictly necessary, no trackers
+
+No lawyers were harmed in the running of this service.

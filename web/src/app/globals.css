@@ -1,0 +1,307 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-border: rgba(226, 232, 240, 0.7);
+  --muted: #64748b;
+  --accent: #4f46e5;
+  --accent-strong: #3b82f6;
+  --accent-soft: rgba(79, 70, 229, 0.08);
+  --citation-public: #059669;
+  --citation-private: #2563eb;
+  --tick-empty: #e2e8f0;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #f8fafc;
+  --card: #18181b;
+  --card-border: rgba(39, 39, 42, 0.6);
+  --muted: #a1a1aa;
+  --accent: #6366f1;
+  --accent-strong: #60a5fa;
+  --accent-soft: rgba(99, 102, 241, 0.12);
+  --citation-public: #34d399;
+  --citation-private: #60a5fa;
+  --tick-empty: #27272a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-citation-public: var(--citation-public);
+  --color-citation-private: var(--citation-private);
+  --color-tick-empty: var(--tick-empty);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --radius-squircle: 1.5rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+::selection {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.glass-nav {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--tick-empty);
+  border-radius: 999px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 400ms ease both;
+}
+
+/* Toast entrance: drop from above + settle */
+/* Focus Mode: hide all chrome so only the lesson remains. Toggled by the
+   module reader via a `focus-mode` class on <body>. */
+body.focus-mode header,
+body.focus-mode footer,
+body.focus-mode .app-chrome {
+  display: none !important;
+}
+body.focus-mode main {
+  padding-top: 1rem !important;
+  padding-bottom: 0 !important;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-toast-in {
+  animation: toast-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Shimmer for skeleton loaders */
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+.skeleton {
+  border-radius: 0.75rem;
+  background: linear-gradient(
+    100deg,
+    var(--tick-empty) 40%,
+    color-mix(in srgb, var(--tick-empty) 45%, var(--card)) 50%,
+    var(--tick-empty) 60%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+/* One-shot press effect for the fake tour cursor */
+@keyframes cursor-click {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.72);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.animate-cursor-click {
+  animation: cursor-click 450ms ease-in-out 1;
+}
+
+@keyframes cursor-ring {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+.animate-cursor-ring {
+  animation: cursor-ring 600ms ease-out 1 forwards;
+}
+
+/* Flowing dashes for pipeline illustrations */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.animate-dash-flow {
+  animation: dash-flow 1.4s linear infinite;
+}
+
+/* Moving data dot along pipeline connectors */
+@keyframes dot-move {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  15%,
+  85% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 8px);
+    opacity: 0;
+  }
+}
+.animate-dot-move {
+  animation: dot-move 1.8s ease-in-out infinite;
+}
+
+/* Bars growing from baseline */
+@keyframes bar-rise {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.animate-bar-rise {
+  transform-origin: bottom;
+  animation: bar-rise 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Progress ticks popping in sequence */
+@keyframes tick-pop {
+  from {
+    transform: scaleY(0.2);
+    opacity: 0.25;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+.animate-tick-pop {
+  animation: tick-pop 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Testimonial marquee: slow vertical loops (seamless via duplicated list) */
+@keyframes marquee-up {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    /* half the track = one full list copy */
+    transform: translateY(-50%);
+  }
+}
+@keyframes marquee-down {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.animate-marquee-up {
+  animation: marquee-up linear infinite;
+}
+.animate-marquee-down {
+  animation: marquee-down linear infinite;
+}
+.testimonials-mask {
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+/* Respect users who prefer reduced motion: kill loops and entrance motion.
+   Marquees are stopped entirely (not just shortened) so content stays still
+   and readable; one-shot reveals collapse to their final state instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee-up,
+  .animate-marquee-down {
+    animation: none !important;
+  }
+  .animate-fade-up,
+  .animate-toast-in,
+  .animate-pulse-dot,
+  .animate-cursor-click,
+  .animate-cursor-ring,
+  .animate-dash-flow,
+  .animate-dot-move,
+  .animate-bar-rise,
+  .animate-tick-pop,
+  .skeleton {
+    animation: none !important;
+  }
+}

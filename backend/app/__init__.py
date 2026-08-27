@@ -1,0 +1,1 @@
+"""Fidya API — application package."""

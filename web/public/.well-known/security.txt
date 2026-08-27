@@ -1,0 +1,8 @@
+Contact: mailto:support@fidya.ai
+Expires: 2027-12-31T23:59:00.000Z
+Preferred-Languages: en, id
+Canonical: https://fidya.ai/.well-known/security.txt
+Policy: https://fidya.ai/security
+
+# We appreciate responsible disclosure.
+# We respond within 72 hours.
