@@ -18,12 +18,14 @@ _ALGO = "HS256"
 
 
 def hash_password(password: str) -> str:
+    """Hash a password with PBKDF2-HMAC-SHA256 and a random salt."""
     salt = secrets.token_hex(16)
     digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), 120_000)
     return f"pbkdf2${salt}${digest.hex()}"
 
 
 def verify_password(password: str, hashed: str) -> bool:
+    """Return whether `password` matches a `hash_password` digest."""
     try:
         _, salt, expected = hashed.split("$")
     except ValueError:
@@ -33,6 +35,7 @@ def verify_password(password: str, hashed: str) -> bool:
 
 
 def create_access_token(user_id: str, email: str) -> str:
+    """Issue an HS256 bearer token for the legacy email/password routes."""
     now = int(time.time())
     payload: dict[str, Any] = {
         "sub": user_id,
@@ -44,6 +47,7 @@ def create_access_token(user_id: str, email: str) -> str:
 
 
 def decode_token(token: str) -> dict[str, Any] | None:
+    """Decode a legacy access token, or return None when it is invalid."""
     try:
         return jwt.decode(token, settings.jwt_secret, algorithms=[_ALGO])
     except jwt.PyJWTError:

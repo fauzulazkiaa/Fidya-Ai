@@ -21,7 +21,8 @@ def _public_user(row: dict) -> dict:
 
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
-async def register(body: RegisterRequest):
+async def register(body: RegisterRequest) -> AuthResponse:
+    """Create an account and return a bearer token."""
     store = get_store()
     existing = store.table("users").select("*").eq("email", body.email).execute().data
     if existing:
@@ -51,7 +52,8 @@ _DUMMY_HASH = hash_password("timing-equalizer-placeholder")
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(body: LoginRequest):
+async def login(body: LoginRequest) -> AuthResponse:
+    """Check email and password and return a bearer token."""
     store = get_store()
     rows = store.table("users").select("*").eq("email", body.email).execute().data
     if not rows:

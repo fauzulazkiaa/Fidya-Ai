@@ -430,4 +430,5 @@ class Hunter:
 
 @lru_cache
 def get_hunter() -> Hunter:
+    """Return the process-wide Hunter client."""
     return Hunter()

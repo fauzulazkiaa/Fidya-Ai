@@ -100,6 +100,7 @@ def _find_module(curriculum: dict, module_id: str) -> dict:
 
 @router.get("/{curriculum_id}")
 async def get_curriculum(curriculum_id: str, user: dict = Depends(get_current_user)):
+    """Return one curriculum owned by the signed-in user."""
     return _load_curriculum(curriculum_id, user["user_id"])
 
 

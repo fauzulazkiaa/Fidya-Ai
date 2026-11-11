@@ -13,6 +13,7 @@ class FidyaFormatter(logging.Formatter):
 
 
 def setup_logging() -> None:
+    """Install the process-wide formatter. DEBUG when `settings.debug` is set."""
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(
         FidyaFormatter(
@@ -25,4 +26,5 @@ def setup_logging() -> None:
 
 
 def get_logger(name: str, agent_id: str = "system") -> logging.LoggerAdapter:
+    """Return a logger that stamps every record with `agent_id`."""
     return logging.LoggerAdapter(logging.getLogger(name), {"agent_id": agent_id})

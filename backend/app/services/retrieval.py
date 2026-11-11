@@ -98,4 +98,5 @@ class RetrievalEngine:
 
 @lru_cache(maxsize=1)
 def get_retrieval_engine() -> RetrievalEngine:
+    """Return the process-wide retrieval engine."""
     return RetrievalEngine()

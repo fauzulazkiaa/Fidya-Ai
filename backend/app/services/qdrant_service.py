@@ -64,11 +64,13 @@ async def _with_retry(op, *args, **kwargs):
 
 
 def user_namespace(user_id: str) -> str:
+    """Private Qdrant namespace for one user's uploaded documents."""
     return f"NS_user_{user_id}"
 
 
 @lru_cache
 def get_qdrant() -> QdrantClient:
+    """Return a cached client. Uses `:memory:` when `QDRANT_URL` is empty."""
     if settings.qdrant_url:
         log.info("Connecting to Qdrant at %s", settings.qdrant_url)
         client: QdrantClient = QdrantClient(
@@ -168,4 +170,5 @@ class VectorStore:
 
 @lru_cache
 def get_vector_store() -> VectorStore:
+    """Return the process-wide vector store."""
     return VectorStore()
