@@ -99,7 +99,8 @@ def _find_module(curriculum: dict, module_id: str) -> dict:
 
 
 @router.get("/{curriculum_id}")
-async def get_curriculum(curriculum_id: str, user: dict = Depends(get_current_user)):
+async def get_curriculum(curriculum_id: str, user: dict = Depends(get_current_user)) -> dict:
+    """Return one curriculum owned by the signed-in user."""
     return _load_curriculum(curriculum_id, user["user_id"])
 
 
@@ -202,8 +203,7 @@ async def set_curriculum_status(
 def _replan_schedule(curriculum: dict) -> str:
     """Spread unfinished modules evenly between today and the deadline.
     Returns a motivational message for the UI."""
-    import math
-    from datetime import date, timedelta as _td
+    from datetime import date
 
     deadline_raw = str(curriculum.get("target_deadline") or "")[:10]
     try:

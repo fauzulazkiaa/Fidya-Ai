@@ -13,6 +13,12 @@ Thumbs.db
 !.env.example
 !.env.local.example
 
+# Credential files (never commit keys or service accounts)
+*credentials*.json
+*service-account*.json
+*service_account*.json
+*.pem
+
 # Agent/IDE specific files
 .agents/
 .mcp.json

@@ -6,6 +6,9 @@ loop:  Synthesizer -> Fact-Checker -> (pass: done | fail/rewrite: Synthesizer)
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from typing import Any
+
 from langgraph.graph import END, StateGraph
 
 from app.agents.catalyst import catalyst_node
@@ -25,7 +28,6 @@ log = get_logger(__name__, "supervisor")
 # --------------------------------------------------------------------- hunter
 async def hunter_node(state: SyntaxState) -> dict:
     """Fetch credible sources for the current module's search keywords."""
-    from app.db.supabase_client import get_store
     from app.services.chunker import RawDocument, chunk_documents
     from app.services.qdrant_service import GLOBAL_KNOWLEDGE, get_vector_store
 
@@ -73,6 +75,7 @@ def route_from_supervisor(state: SyntaxState) -> str:
 
 
 def route_after_fact_checker(state: SyntaxState) -> str:
+    """Stop after a pass or two rewrites; otherwise send the draft back."""
     status = state.get("verification_status", "pending")
     attempts = state.get("rewrite_attempts", 0)
     if status == "passed" or attempts >= 2:
@@ -84,7 +87,8 @@ def route_after_fact_checker(state: SyntaxState) -> str:
 _compiled = None
 
 
-def build_graph():
+def build_graph() -> Any:
+    """Compile the supervisor graph once and cache it."""
     global _compiled
     if _compiled is not None:
         return _compiled
@@ -131,14 +135,15 @@ def build_graph():
 
 
 def route_from_synthesizer(state: SyntaxState) -> str:
+    """Refetch sources when the draft is ungrounded; otherwise fact-check it."""
     if state.get("draft_content") == "INSUFFICIENT_DATA":
         return "hunter"
     return "fact_checker"
 
 
-async def run_graph_stream(initial_state: SyntaxState):
+async def run_graph_stream(initial_state: SyntaxState) -> AsyncIterator[dict]:
     """Run the graph yielding agent-transition events for SSE (FR-8)."""
-    graph = build_graph()
+    build_graph()
     state = initial_state
 
     intent = state.get("intent")

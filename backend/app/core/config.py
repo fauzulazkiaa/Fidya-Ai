@@ -51,6 +51,7 @@ class Settings(BaseSettings):
 
     @property
     def clerk_jwks(self) -> str | None:
+        """JWKS URL for Clerk session tokens, or None when Clerk is unset."""
         issuer = self.clerk_issuer
         return f"{issuer}/.well-known/jwks.json" if issuer else None
 
@@ -74,6 +75,7 @@ class Settings(BaseSettings):
 
     @property
     def has_supabase(self) -> bool:
+        """True when both a Supabase URL and a server key are set."""
         return bool(self.supabase_url and self.supabase_server_key)
 
     # Qdrant
@@ -92,6 +94,7 @@ class Settings(BaseSettings):
 
     @property
     def has_smtp(self) -> bool:
+        """True when re-engagement mail has a host and a From address."""
         return bool(self.smtp_host and self.smtp_from)
 
     # Gemini / Vertex
@@ -112,15 +115,18 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> list[str]:
+        """``CORS_ORIGINS`` split on commas."""
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
     @property
     def has_gemini(self) -> bool:
+        """True when ``GOOGLE_API_KEY`` is set; otherwise agents use MockLLM."""
         return bool(self.google_api_key)
 
 
 @lru_cache
 def get_settings() -> Settings:
+    """Process-wide settings, cached after the first environment read."""
     return Settings()
 
 

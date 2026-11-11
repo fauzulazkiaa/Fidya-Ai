@@ -93,6 +93,7 @@ class ForgeReview(BaseModel):
 
 
 async def forge_node(state: SyntaxState) -> dict:
+    """LangGraph node: structured critique of the submission in ``active_goal``."""
     llm = get_llm()
     submission = state["active_goal"]  # caller places submission text here
 

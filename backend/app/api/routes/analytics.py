@@ -40,7 +40,8 @@ def _compute_streak(event_dates: set[str]) -> int:
 
 
 @router.get("/progress", response_model=ProgressResponse)
-async def progress(user: dict = Depends(get_current_user)):
+async def progress(user: dict = Depends(get_current_user)) -> ProgressResponse:
+    """Aggregate completion, streak, and study hours for the signed-in user."""
     store = get_store()
     curricula = (
         store.table("curricula").select("*").eq("user_id", user["user_id"]).execute().data

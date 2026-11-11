@@ -38,6 +38,7 @@ class RetrievedChunk:
     score: float
 
     def as_citation(self) -> dict:
+        """Citation fields for the UI, with a short source snippet."""
         return {
             "chunk_id": self.chunk_id,
             "source_title": self.source_title,
@@ -59,6 +60,7 @@ class RetrievalEngine:
         user_id: str | None = None,
         top_n: int | None = None,
     ) -> list[RetrievedChunk]:
+        """Vector search, then re-rank, in the user namespace plus global knowledge."""
         namespaces = (
             [user_namespace(user_id), GLOBAL_KNOWLEDGE]
             if user_id
@@ -98,4 +100,5 @@ class RetrievalEngine:
 
 @lru_cache(maxsize=1)
 def get_retrieval_engine() -> RetrievalEngine:
+    """Cached retrieval engine."""
     return RetrievalEngine()

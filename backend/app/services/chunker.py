@@ -38,6 +38,7 @@ class RawDocument:
 
 
 def slugify(title: str) -> str:
+    """Lowercase hyphenated prefix used in chunk ids."""
     slug = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
     return slug[:48] or "source"
 
@@ -70,6 +71,7 @@ def chunk_document(doc: RawDocument) -> list[dict]:
 
 
 def chunk_documents(docs: list[RawDocument]) -> list[dict]:
+    """Chunk every document and make chunk ids unique inside the batch."""
     all_chunks: list[dict] = []
     for doc in docs:
         all_chunks.extend(chunk_document(doc))

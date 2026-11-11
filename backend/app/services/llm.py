@@ -108,11 +108,13 @@ class BaseLLM:
     async def generate_structured(
         self, prompt: str, schema: Type[T], *, system: str = "", temperature: float = 0.4
     ) -> T:
+        """Return a validated instance of ``schema``."""
         raise NotImplementedError
 
     async def generate_text(
         self, prompt: str, *, system: str = "", temperature: float = 0.4
     ) -> str:
+        """Return a plain-text completion."""
         raise NotImplementedError
 
     def stream_text(

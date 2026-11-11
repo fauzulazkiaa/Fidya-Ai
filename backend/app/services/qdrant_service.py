@@ -64,11 +64,13 @@ async def _with_retry(op, *args, **kwargs):
 
 
 def user_namespace(user_id: str) -> str:
+    """Private payload namespace for one user (``NS_user_{id}``)."""
     return f"NS_user_{user_id}"
 
 
 @lru_cache
 def get_qdrant() -> QdrantClient:
+    """Shared client. Uses ``QDRANT_URL``, or ``:memory:`` when it is empty."""
     if settings.qdrant_url:
         log.info("Connecting to Qdrant at %s", settings.qdrant_url)
         client: QdrantClient = QdrantClient(
@@ -110,6 +112,7 @@ class VectorStore:
         vectors: list[list[float]],
         namespace: str,
     ) -> int:
+        """Write chunks and vectors into one namespace. Returns the point count."""
         assert len(chunks) == len(vectors), "chunks/vectors length mismatch"
         points = [
             qm.PointStruct(
@@ -168,4 +171,5 @@ class VectorStore:
 
 @lru_cache
 def get_vector_store() -> VectorStore:
+    """Cached store around :func:`get_qdrant`."""
     return VectorStore()

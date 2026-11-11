@@ -74,6 +74,7 @@ Respond with your next Socratic move."""
 
 
 async def inquisitor_node(state: SyntaxState) -> dict:
+    """LangGraph node: one Socratic reply plus a mastery score from 1 to 5."""
     llm = get_llm(fast=True)
     result = await llm.generate_structured(
         prompt=build_prompt(state),

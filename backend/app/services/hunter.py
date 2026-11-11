@@ -43,6 +43,7 @@ class HunterCache:
         self._store: dict[str, CachedResponse] = {}
 
     def get(self, key: str) -> list[dict] | None:
+        """Return a cached document list, or None when missing or expired."""
         entry = self._store.get(key)
         if not entry:
             return None
@@ -52,6 +53,7 @@ class HunterCache:
         return entry.value
 
     def set(self, key: str, value: list[dict]) -> None:
+        """Store a document list until the cache TTL expires."""
         self._store[key] = CachedResponse(value)
 
 
@@ -113,6 +115,7 @@ class Hunter:
 
     # ------------------------------------------------------------------ arXiv
     async def search_arxiv(self, keywords: list[str], limit: int = 3) -> list[dict]:
+        """arXiv export API: preprints matching the keywords."""
         docs: list[dict] = []
         seen: set[str] = set()
         phrases = [_core_phrase(k) for k in keywords[:3]]
@@ -162,6 +165,7 @@ class Hunter:
 
     # -------------------------------------------------------------- wikipedia
     async def search_wikipedia(self, keywords: list[str], limit: int = 3) -> list[dict]:
+        """Wikipedia REST search plus a plain-text extract per hit."""
         docs: list[dict] = []
         seen: set[str] = set()
         phrases = [_core_phrase(k, 2) for k in keywords[:3]]
@@ -382,6 +386,7 @@ class Hunter:
 
     # ------------------------------------------------------- semantic scholar
     async def search_semantic_scholar(self, keywords: list[str], limit: int = 3) -> list[dict]:
+        """Semantic Scholar paper search."""
         docs: list[dict] = []
         seen: set[str] = set()
         phrases = [_core_phrase(k) for k in keywords[:3]]
@@ -430,4 +435,5 @@ class Hunter:
 
 @lru_cache
 def get_hunter() -> Hunter:
+    """Cached Hunter client."""
     return Hunter()
