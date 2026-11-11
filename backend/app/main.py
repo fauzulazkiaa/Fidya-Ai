@@ -3,10 +3,12 @@
 Configured with CORS, /api/v1/health endpoint and structured logging.
 """
 
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from app.api.routes import agents, analytics, auth, curriculum, documents, newsletter
 from app.core.config import settings
@@ -21,7 +23,8 @@ log = get_logger("fidya", "system")
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """Configure logging and cancel the optional re-engagement task on shutdown."""
     setup_logging()
     # Refuse to boot production with the forgeable default JWT secret.
     if not settings.debug and not settings.clerk_jwks and settings.jwt_secret == "dev-secret-change-me":
@@ -74,7 +77,7 @@ app.add_middleware(
 
 
 @app.exception_handler(Exception)
-async def unhandled_exception_handler(request: Request, exc: Exception):
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Log every unhandled 500 with a traceback + correlation id, and return
     a generic body so internals never leak to the client."""
     import uuid
@@ -83,7 +86,6 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     log.error("Unhandled error [%s] %s %s: %r",
               req_id, request.method, request.url.path, exc)
     log.error("Traceback [%s]:", req_id, exc_info=exc)
-    from fastapi.responses import JSONResponse
 
     return JSONResponse(
         status_code=500,
@@ -100,7 +102,8 @@ app.include_router(newsletter.router, prefix=API)
 
 
 @app.get(f"{API}/health")
-async def health():
+async def health() -> dict:
+    """Report process health and which backends are live versus in-memory."""
     return {
         "status": "ok",
         "gemini": settings.has_gemini,

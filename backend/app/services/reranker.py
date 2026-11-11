@@ -8,7 +8,6 @@ lexical-overlap scorer keeps the pipeline functional offline.
 
 from __future__ import annotations
 
-import math
 import re
 from functools import lru_cache
 from typing import Any
@@ -114,4 +113,5 @@ class Reranker:
 
 @lru_cache
 def get_reranker() -> Reranker:
+    """Return the process-wide reranker."""
     return Reranker()

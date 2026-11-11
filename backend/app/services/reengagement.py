@@ -16,7 +16,7 @@ sweep only logs what it *would* send — useful for local development.
 """
 
 import smtplib
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from email.message import EmailMessage
 
 from app.core.config import settings
@@ -91,6 +91,7 @@ def _bucket_for(days_inactive: int) -> int | None:
 
 def compose_email(bucket: int, name: str, topic: str, hours: float,
                   done: int, total: int, deadline: str) -> tuple[str, str]:
+    """Fill the subject and body for one inactivity bucket."""
     subject_tpl, body_tpl = COPY[bucket]
     return (
         subject_tpl.format(topic=topic),

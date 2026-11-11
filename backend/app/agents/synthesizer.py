@@ -8,6 +8,8 @@ Hard rules baked into the system prompt:
 
 from __future__ import annotations
 
+import re
+
 from app.agents.state import SyntaxState
 from app.core.logging import get_logger
 from app.services.llm import get_llm
@@ -33,6 +35,7 @@ for objectives."""
 
 
 async def synthesizer_node(state: SyntaxState) -> dict:
+    """Draft a cited lesson, or INSUFFICIENT_DATA when the chunks cannot support one."""
     llm = get_llm(fast=True)
     chunks = state.get("retrieved_chunks") or []
     module = state.get("current_module", {})
@@ -63,7 +66,6 @@ Write the lesson now."""
     # Strip any [chunk_id] tags that do not exist in retrieved chunks —
     # first-line defense before the Fact-Checker runs.
     valid_ids = {c["chunk_id"] for c in chunks}
-    import re
 
     def _drop_invalid(match: re.Match) -> str:
         tag = match.group(1)

@@ -121,6 +121,7 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
+    """Load settings once and reuse them for the process."""
     return Settings()
 
 
