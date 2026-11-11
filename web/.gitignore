@@ -32,9 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # google search console service account credentials
 scripts/gsc_credentials.json
+*credentials*.json
+*service-account*.json
+*service_account*.json
 seo_report.json
 
 # vercel
