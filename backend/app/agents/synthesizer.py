@@ -33,6 +33,7 @@ for objectives."""
 
 
 async def synthesizer_node(state: SyntaxState) -> dict:
+    """LangGraph node: write a cited lesson, or ``INSUFFICIENT_DATA`` if there are no chunks."""
     llm = get_llm(fast=True)
     chunks = state.get("retrieved_chunks") or []
     module = state.get("current_module", {})

@@ -8,7 +8,6 @@ lexical-overlap scorer keeps the pipeline functional offline.
 
 from __future__ import annotations
 
-import math
 import re
 from functools import lru_cache
 from typing import Any
@@ -29,6 +28,7 @@ class Reranker:
     async def rerank(
         self, query: str, chunks: list[dict[str, Any]], top_n: int | None = None
     ) -> list[dict[str, Any]]:
+        """Score chunks and keep the top hits at or above the active threshold."""
         top_n = top_n or settings.rerank_top_n
         scored = [
             {**chunk, "rerank_score": await self._score(query, chunk)}
@@ -114,4 +114,5 @@ class Reranker:
 
 @lru_cache
 def get_reranker() -> Reranker:
+    """Cached reranker (Vertex when enabled, otherwise lexical overlap)."""
     return Reranker()

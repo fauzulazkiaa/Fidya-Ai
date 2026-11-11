@@ -6,7 +6,7 @@ analogy cards that spark creative problem-solving.
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from app.agents.state import SyntaxState
 from app.core.logging import get_logger
@@ -33,6 +33,7 @@ class CatalystSpark(BaseModel):
 
 
 async def catalyst_node(state: SyntaxState) -> dict:
+    """LangGraph node: one cross-domain analogy card for the active module."""
     llm = get_llm(fast=True)
     module = state.get("current_module", {})
     concept = module.get("title") or state.get("active_goal", "the learning goal")

@@ -495,7 +495,6 @@ async def pin_tutor_session(
             if not existing:
                 parts = session_id.split("|", 2)
                 curriculum = parts[1] if len(parts) > 2 else ""
-                started_at = parts[2] if len(parts) > 2 else ""
                 store.table("chat_sessions").insert(
                     {
                         "session_id": session_id,

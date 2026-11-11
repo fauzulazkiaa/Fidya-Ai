@@ -22,6 +22,7 @@ log = get_logger("fidya", "system")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    """Configure logging, refuse the default JWT secret in production, and start mail sweeps."""
     setup_logging()
     # Refuse to boot production with the forgeable default JWT secret.
     if not settings.debug and not settings.clerk_jwks and settings.jwt_secret == "dev-secret-change-me":
@@ -100,7 +101,8 @@ app.include_router(newsletter.router, prefix=API)
 
 
 @app.get(f"{API}/health")
-async def health():
+async def health() -> dict:
+    """Liveness plus whether Gemini, Qdrant, and Supabase are configured."""
     return {
         "status": "ok",
         "gemini": settings.has_gemini,

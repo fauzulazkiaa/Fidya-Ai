@@ -21,7 +21,8 @@ def _public_user(row: dict) -> dict:
 
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)
-async def register(body: RegisterRequest):
+async def register(body: RegisterRequest) -> AuthResponse:
+    """Create an email/password account and return a bearer token."""
     store = get_store()
     existing = store.table("users").select("*").eq("email", body.email).execute().data
     if existing:
@@ -51,7 +52,8 @@ _DUMMY_HASH = hash_password("timing-equalizer-placeholder")
 
 
 @router.post("/login", response_model=AuthResponse)
-async def login(body: LoginRequest):
+async def login(body: LoginRequest) -> AuthResponse:
+    """Return a bearer token, or 401. Unknown emails still run a dummy hash compare."""
     store = get_store()
     rows = store.table("users").select("*").eq("email", body.email).execute().data
     if not rows:
@@ -105,7 +107,7 @@ async def update_me(
                 },
                 on_conflict="id",
             ).execute()
-        except Exception as exc:  # noqa: BLE001
+        except Exception:  # noqa: BLE001
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "Could not save profile")
     return {"ok": True}
 
